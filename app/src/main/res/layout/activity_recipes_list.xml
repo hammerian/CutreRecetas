@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rltId1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RecipesList">
+
+    <TextView
+        android:id="@+id/txttitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:textSize="20dp"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/recetas" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rclView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/txttitle"/>
+
+    <Button
+        android:id="@+id/ntnRecipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="25dp"
+        android:layout_alignRight="@id/rclView"
+        android:layout_alignBottom="@id/rclView"
+        android:text="@string/a_adir" />
+
+</RelativeLayout>
