@@ -2,17 +2,19 @@ package com.example.cutrerecetas;
 
 import android.media.Image;
 
-public class Recipe {
+import java.io.Serializable;
+
+public class Recipe implements Serializable  {
 
     private String recipeName;
     private String recipeType;
 
-    private int recipeImage;
+    private String recipeImage;
 
     public Recipe() {
     }
 
-    public Recipe(String recipeName, String recipeType, int recipeImage) {
+    public Recipe(String recipeName, String recipeType, String recipeImage) {
         this.recipeName = recipeName;
         this.recipeType = recipeType;
         this.recipeImage = recipeImage;
@@ -34,11 +36,11 @@ public class Recipe {
         this.recipeType = recipeType;
     }
 
-    public int getRecipeImage() {
+    public String getRecipeImage() {
         return recipeImage;
     }
 
-    public void setRecipeImage(int recipeImage) {
+    public void setRecipeImage(String recipeImage) {
         this.recipeImage = recipeImage;
     }
 }
