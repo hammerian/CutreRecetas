@@ -28,6 +28,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         public ImageView imgView;
         public TextView txtView1;
         public TextView txtView2;
+        public TextView txtView3;
         private ArrayList<Recipe> recipeList;
 
         public LinearLayout rltId1;
@@ -37,14 +38,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             // Initiate Recipe Cell elements
             this.imgView = (ImageView) itemView.findViewById(R.id.imgView2);
             this.txtView1 = (TextView) itemView.findViewById(R.id.txtName);
-            this.txtView2 = (TextView) itemView.findViewById(R.id.txtType);
+            this.txtView2 = (TextView) itemView.findViewById(R.id.txtDesc);
+            this.txtView3 = (TextView) itemView.findViewById(R.id.txtType);
             rltId1 = (LinearLayout) itemView.findViewById(R.id.rltId1);
         }
     }
 
     @Override
     public RecipeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         // Link Recipe Cell with the Recycler view
         LayoutInflater lytInflater = LayoutInflater.from(parent.getContext());
         View lstItem = lytInflater.inflate(R.layout.recipe_card, parent, false);
@@ -54,20 +55,21 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecipeAdapter.ViewHolder holder, int position) {
-
         // Populate cell with Recipe Data
         final Recipe mListData = recipeData.get(position);
         holder.txtView1.setText(mListData.getRecipeName());
-        holder.txtView2.setText(mListData.getRecipeType());
+        holder.txtView2.setText(mListData.getRecipeDesc());
+        holder.txtView3.setText(mListData.getRecipeType());
         int imgData = Integer.parseInt(mListData.getRecipeImage());
         holder.imgView.setImageResource(imgData);
-
     }
 
     @Override
     public int getItemCount() {
         return this.recipeData.size();
     }
+
+
 
 
     public void remove(int position) {

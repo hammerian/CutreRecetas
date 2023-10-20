@@ -19,10 +19,13 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -30,9 +33,13 @@ import java.util.ArrayList;
 public class RecipesList extends AppCompatActivity {
 
     private Button newRecipe;
+
+    private Spinner spnrFilter;
     private RecyclerView rclrView;
     private DataWriter dataWr;
     private ArrayList<Recipe> newListData;
+    private ArrayList<Recipe> filterListData;
+    private ArrayList<String> arrCategories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,31 +49,41 @@ public class RecipesList extends AppCompatActivity {
         // Initiate activity elements
         rclrView = (RecyclerView) findViewById(R.id.rclView);
         newRecipe = (Button) findViewById(R.id.ntnRecipe);
-
+        spnrFilter = (Spinner) findViewById(R.id.spnrFilter);
         dataWr = new DataWriter(this);
 
+        arrCategories = new ArrayList<String>();
+        arrCategories.add("--Seleccione Una Categoría--");
+        arrCategories.add("Bizcocho");
+        arrCategories.add("Copa");
+        arrCategories.add("Tarta");
+
+        changeCategs(spnrFilter);
+
         // Loading App content data
-        if (dataWr.sharedPreferenceExist("categories")) {
+        if (dataWr.sharedPreferenceExist("recipes")) {
             // App already executed
-            newListData = dataWr.getList("categories");
+            newListData = dataWr.getList("recipes");
         } else {
             // first execution of the app
             newListData = new ArrayList<Recipe>();
             // Load data from scratch
-            newListData.add(new Recipe("Galletas con crema", "Copa", ""+R.drawable.recipe1));
-            newListData.add(new Recipe("Arandanos y coco", "Tarta", ""+R.drawable.recipe2));
-            newListData.add(new Recipe("Chocolate con almendras", "Bizcocho", ""+R.drawable.recipe3));
-            newListData.add(new Recipe("Chocolate y fresas", "Tarta", ""+R.drawable.recipe4));
+            newListData.add(new Recipe("Galletas con crema", "Ingredientes: Harina, aceite, leches, azucar, ...", "Copa", ""+R.drawable.recipe1));
+            newListData.add(new Recipe("Arandanos y coco", "Ingredientes: Harina, aceite, leches, azucar, ...", "Tarta", ""+R.drawable.recipe2));
+            newListData.add(new Recipe("Chocolate con almendras", "Ingredientes: Harina, aceite, leches, azucar, ...", "Bizcocho", ""+R.drawable.recipe3));
+            newListData.add(new Recipe("Chocolate y fresas", "Ingredientes: Harina, aceite, leches, azucar, ...", "Tarta", ""+R.drawable.recipe4));
             // saving data to device
-            dataWr.setList("categories", newListData);
+            dataWr.setList("recipes", newListData);
         }
+        filterListData = newListData;
+
 
         // Recycler view initiation
         rclrView.setLayoutManager(new LinearLayoutManager(this));
 
-        RecipeAdapter adapter = new RecipeAdapter(newListData);
+        RecipeAdapter rcpAdapter = new RecipeAdapter(filterListData);
+        rclrView.setAdapter(rcpAdapter);
         rclrView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
-        rclrView.setAdapter(adapter);
         setUpItemTouchHelper();
 
         // Add recipe button action
@@ -77,6 +94,31 @@ public class RecipesList extends AppCompatActivity {
             }
         });
 
+        spnrFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String str = spnrFilter.getSelectedItem().toString();
+                // Diferent option selected
+                if(position == 0){
+                    filterListData = newListData;
+                } else {
+                    filterListData = newListData;
+                    RecipeAdapter adapter = (RecipeAdapter) rclrView.getAdapter();
+                    for (int i = 0; i < newListData.size();i++) {
+                        Recipe rc = newListData.get(i);
+                        if (!rc.getRecipeType().toString().equals(str)) {
+                         // filterListData.remove(i);
+                            adapter.remove(i);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Nothing selected
+            }
+        });
     }
 
     private void setUpItemTouchHelper() {
@@ -116,6 +158,7 @@ public class RecipesList extends AppCompatActivity {
                 int swipedPosition = viewHolder.getAdapterPosition();
                 RecipeAdapter adapter = (RecipeAdapter) rclrView.getAdapter();
                 adapter.remove(swipedPosition);
+             // filterListData.remove(swipedPosition);
                 initiated = false;
                 xMark.setVisible(false,false);
             }
@@ -168,6 +211,7 @@ public class RecipesList extends AppCompatActivity {
         mItemTouchHelper.attachToRecyclerView(rclrView);
     }
 
+
     private void clearCanvas(Canvas c, Float left, Float top, Float right, Float bottom) {
         Paint pnt = new Paint();
         c.drawRect(left, top, right, bottom, pnt);
@@ -185,9 +229,11 @@ public class RecipesList extends AppCompatActivity {
 
         // Initiate Popup elements
         EditText edtTxt11 = (EditText) popupView.findViewById(R.id.edtTxtName);
-        EditText edtTxt12 = (EditText) popupView.findViewById(R.id.edtTxtType);
+        EditText edtTxt12 = (EditText) popupView.findViewById(R.id.edtTxtDesc);
+        Spinner spnCat = (Spinner) popupView.findViewById(R.id.spnRecipe);
         Button btn2 = popupView.findViewById(R.id.btnRcp);
 
+        changeCategs(spnCat);
         // Launch PopupView
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
@@ -204,16 +250,41 @@ public class RecipesList extends AppCompatActivity {
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Recollection of Form Fields
+                String category = spnCat.getSelectedItem().toString();
                 String recipeName = edtTxt11.getText().toString().trim();
-                String recipeType = edtTxt12.getText().toString().trim();
+                String recipeDesc = edtTxt12.getText().toString().trim();
 
-                Recipe newRecipe = new Recipe(recipeName,recipeType,""+R.drawable.recipe2);
-                newListData.add(newRecipe);
-                dataWr.setList("categories", newListData);
-                popupWindow.dismiss();
-                Toast.makeText(RecipesList.this, "Registro agregado", Toast.LENGTH_SHORT).show();
+                if (testForm(category,recipeName,recipeDesc)) {
+                    Recipe newRecipe = new Recipe(recipeName, recipeDesc, category, "" + R.drawable.recipe2);
+                    newListData.add(newRecipe);
+                    dataWr.setList("recipes", newListData);
+                    popupWindow.dismiss();
+                    Toast.makeText(RecipesList.this, "Registro agregado", Toast.LENGTH_SHORT).show();
+                    spnrFilter.setSelection(0);
+                }
             }
         });
+    }
 
+    private void changeCategs(Spinner spnR) {
+        ArrayAdapter<String> musicAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrCategories);
+        musicAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnR.setAdapter(musicAdapter);
+    }
+
+    // Function to test correct completion of the new recipe Form
+    private boolean testForm(String category, String recipeName, String recipeDesc) {
+        if(category.equals("--Seleccione Una Categoría--")){
+            Toast.makeText(RecipesList.this, "Debes seleccionar una categoría para continuar", Toast.LENGTH_SHORT).show();
+            return false;
+        }else if (recipeName.isEmpty()) {
+            Toast.makeText(RecipesList.this, "Debes escribir un nombre para continuar", Toast.LENGTH_SHORT).show();
+            return false;
+        }else if (recipeDesc.isEmpty()) {
+            Toast.makeText(RecipesList.this, "Debes escribir una descripción para continuar", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 }

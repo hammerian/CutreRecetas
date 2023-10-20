@@ -7,6 +7,7 @@ import java.io.Serializable;
 public class Recipe implements Serializable  {
 
     private String recipeName;
+    private String recipeDesc;
     private String recipeType;
 
     private String recipeImage;
@@ -14,8 +15,9 @@ public class Recipe implements Serializable  {
     public Recipe() {
     }
 
-    public Recipe(String recipeName, String recipeType, String recipeImage) {
+    public Recipe(String recipeName, String recipeDesc, String recipeType, String recipeImage) {
         this.recipeName = recipeName;
+        this.recipeDesc = recipeDesc;
         this.recipeType = recipeType;
         this.recipeImage = recipeImage;
     }
@@ -26,6 +28,14 @@ public class Recipe implements Serializable  {
 
     public void setRecipeName(String recipeName) {
         this.recipeName = recipeName;
+    }
+
+    public String getRecipeDesc() {
+        return recipeDesc;
+    }
+
+    public void setRecipeDesc(String recipeDesc) {
+        this.recipeDesc = recipeDesc;
     }
 
     public String getRecipeType() {

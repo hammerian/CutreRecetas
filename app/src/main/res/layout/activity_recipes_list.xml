@@ -17,12 +17,21 @@
         android:fontFamily="sans-serif-black"
         android:text="@string/recetas" />
 
+    <Spinner
+        android:id="@+id/spnrFilter"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/txttitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rclView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="15dp"
-        android:layout_below="@+id/txttitle"/>
+        android:layout_below="@+id/spnrFilter"/>
 
     <Button
         android:id="@+id/ntnRecipe"
@@ -33,5 +42,6 @@
         android:layout_alignRight="@id/rclView"
         android:layout_alignBottom="@id/rclView"
         android:text="@string/a_adir" />
+
 
 </RelativeLayout>

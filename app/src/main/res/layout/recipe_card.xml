@@ -27,13 +27,19 @@
         <TextView
             android:id="@+id/txtName"
             android:layout_width="match_parent"
-            android:layout_height="15dp"
+            android:layout_height="12dp"
             android:layout_weight="1"
             android:text="Primero" />
         <TextView
-            android:id="@+id/txtType"
+            android:id="@+id/txtDesc"
             android:layout_width="match_parent"
             android:layout_height="15dp"
+            android:layout_weight="2"
+            android:text="Segundo" />
+        <TextView
+            android:id="@+id/txtType"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
             android:layout_weight="1"
             android:text="Segundo" />
     </LinearLayout>
