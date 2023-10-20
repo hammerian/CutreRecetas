@@ -33,6 +33,7 @@ public class DataWriter {
     public static void setList(String key, ArrayList<Recipe> list) {
         // Save the Arraylist to preferences
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME,0);
+        prefs.edit().remove(key).commit();
         SharedPreferences.Editor editor = prefs.edit();
         Gson gson = new Gson();
         String json = gson.toJson(list);

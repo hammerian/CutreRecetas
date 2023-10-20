@@ -38,7 +38,6 @@ public class RecipesList extends AppCompatActivity {
     private RecyclerView rclrView;
     private DataWriter dataWr;
     private ArrayList<Recipe> newListData;
-    private ArrayList<Recipe> filterListData;
     private ArrayList<String> arrCategories;
 
     @Override
@@ -75,13 +74,12 @@ public class RecipesList extends AppCompatActivity {
             // saving data to device
             dataWr.setList("recipes", newListData);
         }
-        filterListData = newListData;
 
 
         // Recycler view initiation
         rclrView.setLayoutManager(new LinearLayoutManager(this));
-
-        RecipeAdapter rcpAdapter = new RecipeAdapter(filterListData);
+        ArrayList<Recipe> rcpLst = new ArrayList<Recipe>(newListData);
+        RecipeAdapter rcpAdapter = new RecipeAdapter(rcpLst);
         rclrView.setAdapter(rcpAdapter);
         rclrView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         setUpItemTouchHelper();
@@ -100,17 +98,18 @@ public class RecipesList extends AppCompatActivity {
                 String str = spnrFilter.getSelectedItem().toString();
                 // Diferent option selected
                 if(position == 0){
-                    filterListData = newListData;
+                    ArrayList<Recipe> rcpLst = new ArrayList<Recipe>(newListData);
+                    rcpAdapter.applyFilter(rcpLst);
                 } else {
-                    filterListData = newListData;
-                    RecipeAdapter adapter = (RecipeAdapter) rclrView.getAdapter();
+                    ArrayList<Recipe> rcpLst = new ArrayList<Recipe>();
                     for (int i = 0; i < newListData.size();i++) {
                         Recipe rc = newListData.get(i);
-                        if (!rc.getRecipeType().toString().equals(str)) {
+                        if (rc.getRecipeType().toString().equals(str)) {
                          // filterListData.remove(i);
-                            adapter.remove(i);
+                            rcpLst.add(rc);
                         }
                     }
+                    rcpAdapter.applyFilter(rcpLst);
                 }
             }
 
@@ -159,6 +158,7 @@ public class RecipesList extends AppCompatActivity {
                 RecipeAdapter adapter = (RecipeAdapter) rclrView.getAdapter();
                 adapter.remove(swipedPosition);
              // filterListData.remove(swipedPosition);
+                dataWr.setList("recipes", adapter.getRecipeData());
                 initiated = false;
                 xMark.setVisible(false,false);
             }

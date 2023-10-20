@@ -3,6 +3,8 @@ package com.example.cutrerecetas;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,9 +21,25 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private static final int PENDING_REMOVAL_TIMEOUT = 3000; // 3sec
 
     private ArrayList<Recipe> recipeData;
+    private ArrayList<Recipe> filterData;
 
     public RecipeAdapter(ArrayList<Recipe> lstData) {
         this.recipeData = lstData;
+        this.filterData = lstData;
+    }
+
+    public void applyFilter(ArrayList<Recipe> lstData) {
+        this.filterData = lstData;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemCount() {
+        return this.filterData.size();
+    }
+
+    public long getItemId(int position) {
+        return position;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -29,7 +47,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         public TextView txtView1;
         public TextView txtView2;
         public TextView txtView3;
-        private ArrayList<Recipe> recipeList;
 
         public LinearLayout rltId1;
 
@@ -44,6 +61,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         }
     }
 
+    public ArrayList<Recipe> getRecipeData() {
+        return this.filterData;
+    }
+
     @Override
     public RecipeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Link Recipe Cell with the Recycler view
@@ -56,7 +77,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecipeAdapter.ViewHolder holder, int position) {
         // Populate cell with Recipe Data
-        final Recipe mListData = recipeData.get(position);
+        final Recipe mListData = filterData.get(position);
         holder.txtView1.setText(mListData.getRecipeName());
         holder.txtView2.setText(mListData.getRecipeDesc());
         holder.txtView3.setText(mListData.getRecipeType());
@@ -64,18 +85,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         holder.imgView.setImageResource(imgData);
     }
 
-    @Override
-    public int getItemCount() {
-        return this.recipeData.size();
+    public void resetFilter() {
+        filterData = recipeData;
     }
-
-
-
-
     public void remove(int position) {
-        Recipe item = recipeData.get(position);
-        if (recipeData.contains(item)) {
-            recipeData.remove(position);
+        Recipe item = filterData.get(position);
+        if (filterData.contains(item)) {
+            filterData.remove(position);
             notifyItemRemoved(position);
         }
     }
