@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 public class RecipesList extends AppCompatActivity {
 
     private Button newRecipe;
+    private ImageButton imgBtn;
 
     private Spinner spnrFilter;
     private RecyclerView rclrView;
@@ -49,6 +52,7 @@ public class RecipesList extends AppCompatActivity {
         // Initiate activity elements
         rclrView = (RecyclerView) findViewById(R.id.rclView);
         newRecipe = (Button) findViewById(R.id.ntnRecipe);
+        imgBtn = (android.widget.ImageButton) findViewById(R.id.imgBtn);
         spnrFilter = (Spinner) findViewById(R.id.spnrFilter);
         dataWr = new DataWriter(this);
 
@@ -90,6 +94,15 @@ public class RecipesList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onButtonShowPopupWindowClick(view);
+            }
+        });
+
+        // Change to DrawerNavigation
+        imgBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent itn = new Intent(RecipesList.this, DetailActivity.class);
+                startActivity(itn);
             }
         });
 

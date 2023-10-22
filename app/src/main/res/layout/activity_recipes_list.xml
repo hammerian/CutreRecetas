@@ -7,6 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".RecipesList">
 
+    <ImageButton
+        android:id="@+id/imgBtn"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/sand"
+        app:srcCompat="@drawable/baseline_menu_24" />
+
     <TextView
         android:id="@+id/txttitle"
         android:layout_width="wrap_content"
@@ -42,6 +51,7 @@
         android:layout_alignRight="@id/rclView"
         android:layout_alignBottom="@id/rclView"
         android:text="@string/a_adir" />
+
 
 
 </RelativeLayout>
