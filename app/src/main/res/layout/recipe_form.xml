@@ -17,7 +17,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textAlignment="center"
-            android:text="Nueva receta" />
+            android:fontFamily="sans-serif-smallcaps"
+            android:textSize="20dp"
+            android:text="@string/new_recipe" />
 
         <EditText
             android:id="@+id/edtTxtName"
@@ -28,7 +30,7 @@
             android:layout_marginRight="15dp"
             android:ems="10"
             android:inputType="text"
-            android:hint="Nombre" />
+            android:hint="@string/nombre" />
 
         <EditText
             android:id="@+id/edtTxtDesc"
@@ -39,7 +41,7 @@
             android:layout_marginRight="15dp"
             android:ems="10"
             android:inputType="text"
-            android:hint="Desc" />
+            android:hint="@string/desc" />
 
         <Spinner
             android:id="@+id/spnRecipe"
@@ -58,7 +60,7 @@
             android:layout_marginLeft="35dp"
             android:layout_marginRight="35dp"
             android:backgroundTint="#ddCCCCAA"
-            android:text="Agregar" />
+            android:text="@string/agregar" />
 
 
     </LinearLayout>

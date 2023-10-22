@@ -2,4 +2,9 @@
     <string name="app_name">CutreRecetas</string>
     <string name="recetas">Recetas</string>
     <string name="a_adir">Añadir</string>
+    <string name="completada">Completada</string>
+    <string name="new_recipe">Nueva Receta</string>
+    <string name="nombre">Nombre</string>
+    <string name="desc">Descripción</string>
+    <string name="agregar">Agregar</string>
 </resources>

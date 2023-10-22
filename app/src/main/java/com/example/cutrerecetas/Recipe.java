@@ -9,17 +9,19 @@ public class Recipe implements Serializable  {
     private String recipeName;
     private String recipeDesc;
     private String recipeType;
+    private boolean recipeEnd;
 
     private String recipeImage;
 
     public Recipe() {
     }
 
-    public Recipe(String recipeName, String recipeDesc, String recipeType, String recipeImage) {
+    public Recipe(String recipeName, String recipeDesc, String recipeType, String recipeImage, boolean recipeEnd) {
         this.recipeName = recipeName;
         this.recipeDesc = recipeDesc;
         this.recipeType = recipeType;
         this.recipeImage = recipeImage;
+        this.recipeEnd = recipeEnd;
     }
 
     public String getRecipeName() {
@@ -52,5 +54,13 @@ public class Recipe implements Serializable  {
 
     public void setRecipeImage(String recipeImage) {
         this.recipeImage = recipeImage;
+    }
+
+    public boolean isRecipeEnd() {
+        return recipeEnd;
+    }
+
+    public void setRecipeEnd(boolean recipeEnd) {
+        this.recipeEnd = recipeEnd;
     }
 }

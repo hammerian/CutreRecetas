@@ -39,6 +39,7 @@ public class RecipesList extends AppCompatActivity {
     private DataWriter dataWr;
     private ArrayList<Recipe> newListData;
     private ArrayList<String> arrCategories;
+    private RecipeAdapter rcpAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +68,10 @@ public class RecipesList extends AppCompatActivity {
             // first execution of the app
             newListData = new ArrayList<Recipe>();
             // Load data from scratch
-            newListData.add(new Recipe("Galletas con crema", "Ingredientes: Harina, aceite, leches, azucar, ...", "Copa", ""+R.drawable.recipe1));
-            newListData.add(new Recipe("Arandanos y coco", "Ingredientes: Harina, aceite, leches, azucar, ...", "Tarta", ""+R.drawable.recipe2));
-            newListData.add(new Recipe("Chocolate con almendras", "Ingredientes: Harina, aceite, leches, azucar, ...", "Bizcocho", ""+R.drawable.recipe3));
-            newListData.add(new Recipe("Chocolate y fresas", "Ingredientes: Harina, aceite, leches, azucar, ...", "Tarta", ""+R.drawable.recipe4));
+            newListData.add(new Recipe("Galletas con crema", "Ingredientes: Harina, aceite, leches, azucar, ...", "Copa", ""+R.drawable.recipe1,false));
+            newListData.add(new Recipe("Arandanos y coco", "Ingredientes: Harina, aceite, leches, azucar, ...", "Tarta", ""+R.drawable.recipe2,false));
+            newListData.add(new Recipe("Chocolate con almendras", "Ingredientes: Harina, aceite, leches, azucar, ...", "Bizcocho", ""+R.drawable.recipe3,false));
+            newListData.add(new Recipe("Chocolate y fresas", "Ingredientes: Harina, aceite, leches, azucar, ...", "Tarta", ""+R.drawable.recipe4,false));
             // saving data to device
             dataWr.setList("recipes", newListData);
         }
@@ -79,7 +80,7 @@ public class RecipesList extends AppCompatActivity {
         // Recycler view initiation
         rclrView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<Recipe> rcpLst = new ArrayList<Recipe>(newListData);
-        RecipeAdapter rcpAdapter = new RecipeAdapter(rcpLst);
+        rcpAdapter = new RecipeAdapter(rcpLst);
         rclrView.setAdapter(rcpAdapter);
         rclrView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         setUpItemTouchHelper();
@@ -92,6 +93,7 @@ public class RecipesList extends AppCompatActivity {
             }
         });
 
+        // Change filter Categories
         spnrFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -105,7 +107,7 @@ public class RecipesList extends AppCompatActivity {
                     for (int i = 0; i < newListData.size();i++) {
                         Recipe rc = newListData.get(i);
                         if (rc.getRecipeType().toString().equals(str)) {
-                         // filterListData.remove(i);
+                         // filterListData.remove(i); //TODO: Error al actualizar el array
                             rcpLst.add(rc);
                         }
                     }
@@ -157,8 +159,10 @@ public class RecipesList extends AppCompatActivity {
                 int swipedPosition = viewHolder.getAdapterPosition();
                 RecipeAdapter adapter = (RecipeAdapter) rclrView.getAdapter();
                 adapter.remove(swipedPosition);
-             // filterListData.remove(swipedPosition);
+             // newListData.remove(swipedPosition); //TODO: Error al actualizar el array
+                newListData = adapter.getRecipeData();
                 dataWr.setList("recipes", adapter.getRecipeData());
+                adapter.notifyDataSetChanged();
                 initiated = false;
                 xMark.setVisible(false,false);
             }
@@ -256,21 +260,24 @@ public class RecipesList extends AppCompatActivity {
                 String recipeDesc = edtTxt12.getText().toString().trim();
 
                 if (testForm(category,recipeName,recipeDesc)) {
-                    Recipe newRecipe = new Recipe(recipeName, recipeDesc, category, "" + R.drawable.recipe2);
+                    Recipe newRecipe = new Recipe(recipeName, recipeDesc, category, "" + R.drawable.recipe2,false);
                     newListData.add(newRecipe);
                     dataWr.setList("recipes", newListData);
-                    popupWindow.dismiss();
-                    Toast.makeText(RecipesList.this, "Registro agregado", Toast.LENGTH_SHORT).show();
+                    rcpAdapter.applyFilter(newListData);
                     spnrFilter.setSelection(0);
+                    rcpAdapter.notifyDataSetChanged();
+
+                    Toast.makeText(RecipesList.this, "Registro agregado", Toast.LENGTH_SHORT).show();
+                    popupWindow.dismiss();
                 }
             }
         });
     }
 
     private void changeCategs(Spinner spnR) {
-        ArrayAdapter<String> musicAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrCategories);
-        musicAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spnR.setAdapter(musicAdapter);
+        ArrayAdapter<String> categAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrCategories);
+        categAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnR.setAdapter(categAdapter);
     }
 
     // Function to test correct completion of the new recipe Form
