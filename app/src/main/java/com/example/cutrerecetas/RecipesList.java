@@ -89,7 +89,6 @@ public class RecipesList extends AppCompatActivity {
             dataWr.setList("recipes", newListData);
         }
 
-
         // Recycler view initiation
         rclrView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<Recipe> rcpLst = new ArrayList<Recipe>(newListData);
@@ -119,12 +118,13 @@ public class RecipesList extends AppCompatActivity {
         spnrFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String str = spnrFilter.getSelectedItem().toString();
                 // Different option selected
                 if(position == 0){
                     ArrayList<Recipe> rcpLst = new ArrayList<Recipe>(newListData);
                     rcpAdapter.applyFilter(rcpLst);
+                    dataWr.clearCateg();
                 } else {
+                    String str = spnrFilter.getSelectedItem().toString();
                     ArrayList<Recipe> rcpLst = new ArrayList<Recipe>();
                     for (int i = 0; i < newListData.size();i++) {
                         Recipe rc = newListData.get(i);
@@ -133,6 +133,7 @@ public class RecipesList extends AppCompatActivity {
                             rcpLst.add(rc);
                         }
                     }
+                    dataWr.setCateg(str);
                     rcpAdapter.applyFilter(rcpLst);
                 }
             }
@@ -142,6 +143,17 @@ public class RecipesList extends AppCompatActivity {
                 // Nothing selected
             }
         });
+
+        // recovers the categories filter from previous sessions
+        if (dataWr.sharedPreferenceExist("categs")) {
+            String categ = dataWr.getCateg();
+            for (int i = 0; i < arrCategories.size();i++) {
+                String compCateg = arrCategories.get(i);
+                if (categ.equals(compCateg)){
+                    spnrFilter.setSelection(i);
+                }
+            }
+        }
     }
 
     private void setUpItemTouchHelper() {
@@ -300,7 +312,7 @@ public class RecipesList extends AppCompatActivity {
                     if (imageV == null) {
                         newRecipe = new Recipe(recipeName, recipeDesc, category, "" + R.drawable.recipe2, false);
                     } else {
-                        newRecipe = new Recipe(recipeName, recipeDesc, category, imageV, false);
+                        newRecipe = new Recipe (recipeName, recipeDesc, category,imageV,false);
                     }
                     newListData.add(newRecipe);
                     dataWr.setList("recipes", newListData);

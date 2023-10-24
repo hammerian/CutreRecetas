@@ -2,6 +2,7 @@ package com.example.cutrerecetas;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,7 +102,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             int imgData = Integer.parseInt(mListData.getRecipeImage());
             holder.imgView.setImageResource(imgData);
         } else {
-            holder.imgView.setImageBitmap(imageV);
+         // TODO: ERROR, al recuperar el Bitmap de 'SharedPreferences'
+         // holder.imgView.setImageBitmap(imageV);
         }
 
         // Event with Checkbox // TODO: position da un error que no afecta a la ejecución
