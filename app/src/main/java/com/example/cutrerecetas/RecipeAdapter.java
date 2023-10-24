@@ -1,6 +1,7 @@
 package com.example.cutrerecetas;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,8 +96,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         holder.txtView2.setText(mListData.getRecipeDesc());
         holder.txtView3.setText(mListData.getRecipeType());
         holder.chckB1.setChecked(mListData.isRecipeEnd());
-        int imgData = Integer.parseInt(mListData.getRecipeImage());
-        holder.imgView.setImageResource(imgData);
+        Bitmap imageV = mListData.getImageV();
+        if (imageV == null) {
+            int imgData = Integer.parseInt(mListData.getRecipeImage());
+            holder.imgView.setImageResource(imgData);
+        } else {
+            holder.imgView.setImageBitmap(imageV);
+        }
 
         // Event with Checkbox // TODO: position da un error que no afecta a la ejecución
         holder.chckB1.setOnClickListener(new View.OnClickListener() {

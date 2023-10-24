@@ -6,6 +6,7 @@
     <string name="new_recipe">Nueva Receta</string>
     <string name="nombre">Nombre</string>
     <string name="desc">Descripción</string>
+    <string name="imagen">Imagen</string>
     <string name="agregar">Agregar</string>
     <string name="home">Inicio</string>
     <string name="config">Configuración</string>

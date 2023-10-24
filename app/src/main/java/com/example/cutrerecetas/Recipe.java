@@ -1,5 +1,6 @@
 package com.example.cutrerecetas;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ public class Recipe implements Serializable  {
     private boolean recipeEnd;
 
     private String recipeImage;
+    private Bitmap imageV;
 
     public Recipe() {
     }
@@ -21,6 +23,14 @@ public class Recipe implements Serializable  {
         this.recipeDesc = recipeDesc;
         this.recipeType = recipeType;
         this.recipeImage = recipeImage;
+        this.recipeEnd = recipeEnd;
+    }
+
+    public Recipe(String recipeName, String recipeDesc, String recipeType, Bitmap imageV, boolean recipeEnd) {
+        this.recipeName = recipeName;
+        this.recipeDesc = recipeDesc;
+        this.recipeType = recipeType;
+        this.imageV = imageV;
         this.recipeEnd = recipeEnd;
     }
 
@@ -54,6 +64,14 @@ public class Recipe implements Serializable  {
 
     public void setRecipeImage(String recipeImage) {
         this.recipeImage = recipeImage;
+    }
+
+    public Bitmap getImageV() {
+        return imageV;
+    }
+
+    public void setImageV(Bitmap imageV) {
+        this.imageV = imageV;
     }
 
     public boolean isRecipeEnd() {

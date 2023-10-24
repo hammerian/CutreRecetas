@@ -1,5 +1,6 @@
 package com.example.cutrerecetas;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -9,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,6 +19,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -25,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
@@ -37,8 +42,12 @@ public class RecipesList extends AppCompatActivity {
     private Button newRecipe;
     private ImageButton imgBtn;
 
+    private ImageView imgView1;
     private Spinner spnrFilter;
     private RecyclerView rclrView;
+
+    private Bitmap imageV;
+    private static final int CAMERA_REQUEST_CODE = 100;
     private DataWriter dataWr;
     private ArrayList<Recipe> newListData;
     private ArrayList<String> arrCategories;
@@ -50,13 +59,13 @@ public class RecipesList extends AppCompatActivity {
         setContentView(R.layout.activity_recipes_list);
 
         // Initiate activity elements
-        rclrView = (RecyclerView) findViewById(R.id.rclView);
-        newRecipe = (Button) findViewById(R.id.ntnRecipe);
-        imgBtn = (android.widget.ImageButton) findViewById(R.id.imgBtn);
-        spnrFilter = (Spinner) findViewById(R.id.spnrFilter);
+        rclrView = findViewById(R.id.rclView);
+        newRecipe = findViewById(R.id.ntnRecipe);
+        imgBtn = findViewById(R.id.imgBtn);
+        spnrFilter = findViewById(R.id.spnrFilter);
         dataWr = new DataWriter(this);
 
-        arrCategories = new ArrayList<String>();
+        arrCategories = new ArrayList<>();
         arrCategories.add("--Seleccione Una Categoría--");
         arrCategories.add("Bizcocho");
         arrCategories.add("Copa");
@@ -111,7 +120,7 @@ public class RecipesList extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 String str = spnrFilter.getSelectedItem().toString();
-                // Diferent option selected
+                // Different option selected
                 if(position == 0){
                     ArrayList<Recipe> rcpLst = new ArrayList<Recipe>(newListData);
                     rcpAdapter.applyFilter(rcpLst);
@@ -248,7 +257,9 @@ public class RecipesList extends AppCompatActivity {
         EditText edtTxt11 = (EditText) popupView.findViewById(R.id.edtTxtName);
         EditText edtTxt12 = (EditText) popupView.findViewById(R.id.edtTxtDesc);
         Spinner spnCat = (Spinner) popupView.findViewById(R.id.spnRecipe);
+        imgView1 = (ImageView) popupView.findViewById(R.id.imgView1) ;
         Button btn2 = popupView.findViewById(R.id.btnRcp);
+        Button btnPic = popupView.findViewById(R.id.btnPic);
 
         changeCategs(spnCat);
         // Launch PopupView
@@ -263,6 +274,18 @@ public class RecipesList extends AppCompatActivity {
             }
         });
 
+        // Add Image button action
+        btnPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{android.Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
+                } else {
+                    openCamera();
+                }
+            }
+        });
+
         // Save recipe button action
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -273,7 +296,12 @@ public class RecipesList extends AppCompatActivity {
                 String recipeDesc = edtTxt12.getText().toString().trim();
 
                 if (testForm(category,recipeName,recipeDesc)) {
-                    Recipe newRecipe = new Recipe(recipeName, recipeDesc, category, "" + R.drawable.recipe2,false);
+                    Recipe newRecipe;
+                    if (imageV == null) {
+                        newRecipe = new Recipe(recipeName, recipeDesc, category, "" + R.drawable.recipe2, false);
+                    } else {
+                        newRecipe = new Recipe(recipeName, recipeDesc, category, imageV, false);
+                    }
                     newListData.add(newRecipe);
                     dataWr.setList("recipes", newListData);
                     rcpAdapter.applyFilter(newListData);
@@ -287,6 +315,46 @@ public class RecipesList extends AppCompatActivity {
         });
     }
 
+    // Function to open device camera
+    private void openCamera () {
+        Intent intentCamara = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intentCamara, 1);
+    }
+
+    // Function to request camera permissions
+    private boolean hasStoragePermission(Context context) {
+        int read = ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+        return read == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Camera permission granted.", Toast.LENGTH_LONG).show();
+                // Do stuff here for Action Image Capture.
+            } else {
+                Toast.makeText(this, "Camera permission denied.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            try{
+                Bundle extra = data.getExtras();
+                imageV = (Bitmap) extra.get("data");
+                imgView1.setImageBitmap(imageV);
+            } catch (NullPointerException npe) {
+                System.out.println(npe);
+            }
+        }
+    }
+
+    // Function to change values in spinner
     private void changeCategs(Spinner spnR) {
         ArrayAdapter<String> categAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrCategories);
         categAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
