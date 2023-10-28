@@ -73,11 +73,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         }
     }
 
-    // Function for return the working array in the Adapter
-    public ArrayList<Recipe> getRecipeData() {
-        return this.filterData;
-    }
-
     @Override
     public RecipeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Link Recipe Cell with the Recycler view
@@ -92,6 +87,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecipeAdapter.ViewHolder holder, int position) {
         // Populate cell with Recipe Data
+        int myPos = position;
         final Recipe mListData = filterData.get(position);
         holder.txtView1.setText(mListData.getRecipeName());
         holder.txtView2.setText(mListData.getRecipeDesc());
@@ -106,12 +102,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
          // holder.imgView.setImageBitmap(imageV);
         }
 
-        // Event with Checkbox // TODO: position da un error que no afecta a la ejecución
+        // Event with Checkbox
         holder.chckB1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mListData.setRecipeEnd(!mListData.isRecipeEnd());
-                filterData.set(position,mListData);
+                filterData.set(myPos,mListData);
                 dataWr = new DataWriter(adapHolder);
                 dataWr.setList("recipes", filterData);
             }
@@ -124,6 +120,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         });
     }
 
+    // Function for return the working array in the Adapter
+    public ArrayList<Recipe> getRecipeData() {
+        return this.filterData;
+    }
+
     public void resetFilter() {
         filterData = recipeData;
     }
@@ -134,11 +135,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             notifyItemRemoved(position);
         }
     }
-    public void addRegister(int position) {
+ /* public void addRegister(int position) {
         Recipe item = filterData.get(position);
         if (filterData.contains(item)) {
             filterData.remove(position);
             notifyItemRemoved(position);
         }
-    }
+    } */
 }

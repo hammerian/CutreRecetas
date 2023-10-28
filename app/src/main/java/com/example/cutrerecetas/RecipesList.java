@@ -35,6 +35,7 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class RecipesList extends AppCompatActivity {
@@ -359,6 +360,11 @@ public class RecipesList extends AppCompatActivity {
             try{
                 Bundle extra = data.getExtras();
                 imageV = (Bitmap) extra.get("data");
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                imageV.compress(Bitmap.CompressFormat.PNG, 100, baos);
+               //data = baos.toByteArray();
+
                 imgView1.setImageBitmap(imageV);
             } catch (NullPointerException npe) {
                 System.out.println(npe);
